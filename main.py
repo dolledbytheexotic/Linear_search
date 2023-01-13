@@ -1,27 +1,21 @@
-import json  
+import requests
+from bs4 import BeautifulSoup
 
-# Load liked_posts.json
-with open ('liked_posts.json') as file: 
-  likedposts = json.load(file)
+# Website 1
+website1 = "website api"
+page1 = requests.get(website1)
+soup1 = BeautifulSoup(page1.content, "html.parser")
+price1 = soup1.find("span", class_="price").get_text(0)
 
-# Load following.json
-with open('following.json') as file:
-  following_json = json.load(file)
+# Website 2
+website2 = "Website api"
+page2 = requests.get(website2)
+soup2 = BeautifulSoup(page2.content, "html.parser")
+price2 = soup2.find("span", class_="price").get_text()
 
-# Create an empty list for liked posts and following users
-liked_post_and_followingusers = []
-
-# Add all following users to the list
-for following in following_json["relationships_following"]: 
-  liked_post_and_followingusers.append(following["string_list_data"][0]["value"])
-
-# Add all image users to the list
-for image in likedposts["likes_media_likes"]:
-  liked_post_and_followingusers.append(image["string_list_data"][0]["value"])
-
-# Remove duplicates from the list
-liked_post_and_followingusers = list(set(liked_post_and_followingusers))
-
-# Print out the unique list of users
-for user in liked_post_and_followingusers:
-  print(user)
+if float(price1) < float(price2):
+    print(f"The price on {website1} is cheaper: {price1}")
+elif float(price1) > float(price2):
+    print(f"The price on {website2} is cheaper: {price2}")
+else:
+    print(f"The prices on both websites are equal: {price1}")
